@@ -16,7 +16,21 @@ def _test():
 
 
 def _deploy():
-    pass
+    if len(sys.argv) > 2:
+        if "--skip-tests" in sys.argv[2]:
+            call(["python", "robot.py", "deploy", "--skip-tests"], shell=True)
+            return
+
+    call(["python", "robot.py", "deploy"], shell=True)
+
+
+def _deploy_netconsole():
+    if len(sys.argv) > 2:
+        if "--skip-tests" in sys.argv[2]:
+            call(["python", "robot.py", "deploy", "--nc", "--skip-tests"], shell=True)
+            return
+
+    call(["python", "robot.py", "deploy", "--nc"], shell=True)
 
 
 def _install_robotpy():
@@ -44,6 +58,7 @@ if __name__ == "__main__":
     actions = {
         "test": _test,
         "deploy": _deploy,
+        "deploync": _deploy_netconsole,
         "flash": _flash,
         "": _pass
     }
