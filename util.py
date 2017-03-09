@@ -85,5 +85,7 @@ if __name__ == "__main__":
     tw.line("wpilib-%s, hal-%s" % (wpilib.__version__, hal.__version__))
 
     tw.sep('=', "Running action: " + (action if action != "" else "none"), bold=True, green=True)
-
-    actions[action]()
+    try:
+        actions[action]()
+    except:
+        tw.line("No entry for " + action, bold=True, Red=True)
