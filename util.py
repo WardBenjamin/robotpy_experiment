@@ -33,8 +33,14 @@ def _deploy_netconsole():
     call(["python", "robot.py", "deploy", "--nc"], shell=True)
 
 
+def _update_robotpy():
+    call(["python", "-m", "robotpy_installer", "download-robotpy"], shell=True)
+    call(["python", "-m", "robotpy_installer", "download-opkg", "python36-robotpy-ctre"])
+
+
 def _install_robotpy():
-    pass
+    call(["python", "-m", "robotpy_installer", "install-robotpy"], shell=True)
+    call(["python", "-m", "robotpy_installer", "install-opkg", "python36-robotpy-ctre"])
 
 
 def _install_packages():
@@ -59,6 +65,7 @@ if __name__ == "__main__":
         "test": _test,
         "deploy": _deploy,
         "deploync": _deploy_netconsole,
+        "update": _update_robotpy,
         "flash": _flash,
         "": _pass
     }
