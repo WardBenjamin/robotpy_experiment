@@ -13,20 +13,21 @@ class Robot(wpilib.IterativeRobot):
         This function is called upon program startup and
         should be used for any initialization code.
         """
-        #self.talon_FL = ctre.CANTalon(1) #These are what should be used -- CANTalons
-        #self.talon_ML = ctre.CANTalon(2)
-        #self.talon_RL = ctre.CANTalon(3)
-        #self.talon_FR = ctre.CANTalon(4)
-        #self.talon_MR = ctre.CANTalon(5)
-        #self.talon_RR = ctre.CANTalon(6)
-        self.talon_FL = wpilib.Talon(1) #These are what works with the simulation -- Talons
-        self.talon_ML = wpilib.Talon(2)
-        self.talon_RL = wpilib.Talon(3)
-        self.talon_FR = wpilib.Talon(4)
-        self.talon_MR = wpilib.Talon(5)
-        self.talon_RR = wpilib.Talon(6)
+        self.talon_FL = ctre.CANTalon(1) #These are what should be used -- CANTalons
+        self.talon_ML = ctre.CANTalon(2)
+        self.talon_RL = ctre.CANTalon(3)
+        self.talon_FR = ctre.CANTalon(4)
+        self.talon_MR = ctre.CANTalon(5)
+        self.talon_RR = ctre.CANTalon(6)
+        #self.talon_FL = wpilib.Talon(1) #These are what works with the simulation -- Talons
+        #self.talon_ML = wpilib.Talon(2)
+        #self.talon_RL = wpilib.Talon(3)
+        #self.talon_FR = wpilib.Talon(4)
+        #self.talon_MR = wpilib.Talon(5)
+        #self.talon_RR = wpilib.Talon(6)
         self.drive_train = wpilib.RobotDrive(self.talon_FL, self.talon_RL,
                                              self.talon_FR, self.talon_RR)
+        self.drive_train.setSafetyEnabled(False)
 
         #The wpilib.RobotDrive() method only takes in two or four motors
         #My solution is putting the other two in follower mode
@@ -37,11 +38,11 @@ class Robot(wpilib.IterativeRobot):
         #Sets those normally with that method. For the other two, the set method
         #Can be used manually with the port of the talon to follow
 
-        self.talon_ML.setControlMode(CANTalon.ControlMode.Follower)
-        self.talon_RL.setControlMode(CANTalon.ControlMode.Follower)
+        self.talon_ML.setControlMode(ctre.CANTalon.ControlMode.Follower)
+        self.talon_MR.setControlMode(ctre.CANTalon.ControlMode.Follower)
 
-        self.driver = wpilib.Joystick(0) #Driver is port 0
-        self.gunner = wpilib.Joystick(1) #Gunner is port 1, currently not used
+        self.driver = wpilib.XboxController(0) #Driver is port 0
+        self.gunner = wpilib.XboxController(1) #Gunner is port 1, currently not used
 
     def autonomousInit(self):
         """This function is run once each time the robot enters autonomous mode."""
@@ -63,12 +64,19 @@ class Robot(wpilib.IterativeRobot):
 
     def teleopPeriodic(self):
         """This function is called periodically during operator control."""
-        pass
-        #self.robot_drive.arcadeDrive(self.stick)
+        self.drive_train.arcadeDrive(self.driver.getY(wpilib.GenericHID.Hand.kLeft), self.driver.getX(wpilib.GenericHID.Hand.kLeft))
 
     def testPeriodic(self):
         """This function is called periodically during test mode."""
         wpilib.LiveWindow.run()
+
+    def robotPeriodic(self):
+        self.talon_ML.set(self.talon_FL.getDeviceID())
+        self.talon_MR.set(self.talon_FR.getDeviceID())
+
+    def disabledInit(self):
+        self.drive_train.tankDrive(0, 0)
+        self.drive_train.stopMotor()
 
 if __name__ == "__main__":
     wpilib.run(Robot, physics_enabled=True)
