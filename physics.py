@@ -36,7 +36,6 @@ class PhysicsEngine(object):
         rr_motor = hal_data['pwm'][6]['value']
         lf_motor = hal_data['pwm'][1]['value']
         rf_motor = hal_data['pwm'][4]['value']
-        print
 
         speed, rotation = drivetrains.four_motor_drivetrain(lr_motor, rr_motor, lf_motor, rf_motor)
         self.physics_controller.drive(speed, rotation, tm_diff)
